@@ -24,7 +24,7 @@
 void Collector::monitor_and_collect()
 {
     std::cout << "Start monitoring " << input_path << std::endl;
-    std::cout << "Please hit ENTER to stop the program and quit." << std::endl;
+    std::cout << "Please type <q> and press <RETURN> to stop the program and quit." << std::endl;
 
     monitor_thread = std::thread{&Collector::monitor, this};
     collector_thread = std::thread{&Collector::collect, this};
@@ -57,7 +57,7 @@ void Collector::monitor_and_collect()
                  * read from stdin until newline character is found,
                  * then quit out of loop
                  */
-                while (read(STDIN_FILENO, &buffer, 1) > 0 && buffer != '\n')
+                while (read(STDIN_FILENO, &buffer, 1) > 0 && buffer != 'q')
                 {
                     continue;
                 }
@@ -83,7 +83,7 @@ void Collector::monitor()
     if (file_descriptor < 0)
     {
         std::cerr << "Error while initializing inotify."
-                  << "Please hit enter to quit"
+                  << "Please type <q> and press <RETURN> to quit"
                   << std::endl;
         return;
     }
@@ -93,7 +93,7 @@ void Collector::monitor()
     if (watch_descriptor < 0)
     {
         std::cerr << "Error, cannot watch " << input_path.c_str() << "."
-                  << "Please hit enter to quit"
+                  << "Please type <q> and press <RETURN> to quit"
                   << std::endl;
         return;
     }
@@ -201,7 +201,7 @@ std::vector<std::filesystem::path> Collector::collect_files
             std::vector<std::filesystem::path> files;
             for (auto const& entry : std::filesystem::directory_iterator{path})
             {
-                if (entry.is_regular_file() && !entry.is_directory())
+                if (entry.is_regular_file())
                 {
                     files.push_back(entry.path());
                 }
@@ -235,12 +235,7 @@ void Collector::collect_disk_usage
 
     for (auto const& file : files)
     {
-        std::string command {"du -sh "};
-        command += file.c_str();
-        command += " >> ";
-        command += usage.c_str();
-
-        std::system(command.c_str());
+        std::system(std::string {"du -sh " + file.native() + " >> " + usage.native()}.c_str());
     }
 
     files.push_back(usage);
@@ -258,13 +253,11 @@ void Collector::store_files
 {
     std::cout << "Storing collected data as tar archive in " << output_file << std::endl;
 
-    std::string command {"tar -cf "};
-    command += output_file.c_str();
+    std::string command {"tar -cf " + output_file.native()};
 
     for (auto const& file : files)
     {
-        command += " ";
-        command += file.c_str();
+        command += " " + file.native();
     }
 
     std::system(command.c_str());
@@ -274,10 +267,7 @@ void Collector::store_files
         // remove temporary files
         for (auto const& file : temporaries)
         {
-            command = std::string {"rm -rf "};
-            command += file.c_str();
-
-            std::system(command.c_str());
+            std::system(std::string {"rm -rf " + file.native()}.c_str());
         }
     }
 }
@@ -294,7 +284,7 @@ void Collector::handle_file_event(int const file_descriptor, int const watch_des
         if (n < 0 && errno != EAGAIN)
         {
             std::cerr << "Error while reading from " << input_path.c_str() << "."
-                  << "Please hit enter to quit"
+                  << "Please type <q> and press <RETURN> to quit"
                   << std::endl;
             return;
         }
