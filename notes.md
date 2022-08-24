@@ -92,7 +92,7 @@ Collect:
 Method:
 
 * Selection of collected data via command line parameter, e.g. `-f, -d`
-* Traverse `parent` directory recursively using 
+* Traverse `parent` directory recursively using
 `std::filesystem::recursive_directory_iterator`
 * Depending on selection, push file names onto a `std::vector`
 
