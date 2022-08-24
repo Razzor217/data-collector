@@ -4,11 +4,11 @@
  * @brief Implementation of a blocking fifo queue for concurrent use
  * @version 0.1
  * @date 2022-08-24
- * 
+ *
  * This implementation was taken from my master's thesis implementation at KIT.
- * 
+ *
  * @copyright Copyright (c) 2022
- * 
+ *
  */
 
 #pragma once
