@@ -110,9 +110,9 @@ Multithreading:
 1. One thread monitors the specified directory
     * Continuously `read()` from the watched directory
     * Match file names, create event on match
-    * Push event onto a **concurrent queue**
+    * Push event onto a **threadsafe queue**
 2. Second thread handles incoming events
-    * Pop events from a **concurrent queue**
+    * Pop events from a **threadsafe queue**
     * Collect data from watched directory
     * Store `tar` archive in output directory
 3. Main thread
@@ -122,8 +122,7 @@ Multithreading:
 Classes:
 
 * Controller
-* Concurrent queue
-* Helper classes for monitoring, matching, data collection, data storage
+* Threadsafe queue
 
 
 ## Testing
@@ -132,12 +131,13 @@ Classes:
 
 * File name matching
 * Collection of selected file names
+* Collection of disk usage information
+* Storage of `tar` archives
 
 Note: Unit testing of the concurrent queue is omitted as it was tested in
 previous projects.
 
 ### Component testing
 
-* Event trigger on matching file creation
-* `tar` archive creation for given directory
-* Complete program
+* Complete program (creation of a `tar` archive after file creation)
+Correctness of matching, collection and storage is assumed (correctness tests)
