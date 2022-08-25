@@ -120,7 +120,7 @@ void Collector::monitor()
         {
             if (poll_descriptor.revents & POLLIN)
             {
-                handle_file_event(file_descriptor, watch_descriptor);
+                handle_file_event(file_descriptor);
             }
         }
     }
@@ -273,13 +273,13 @@ void Collector::store_files
 }
 
 
-void Collector::handle_file_event(int const file_descriptor, int const watch_descriptor)
+void Collector::handle_file_event(int const file_descriptor)
 {
     alignas(inotify_event) char buffer[BUFFER_SIZE];
 
     while (is_running.load())
     {
-        int n {read(file_descriptor, buffer, BUFFER_SIZE)};
+        int n = read(file_descriptor, buffer, BUFFER_SIZE);
 
         if (n < 0 && errno != EAGAIN)
         {

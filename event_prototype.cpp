@@ -44,7 +44,7 @@ int main(int argc, char** argv)
     }
 
     alignas(inotify_event) char buffer[BUFFER_SIZE];
-    int const n {read(file_descriptor, buffer, BUFFER_SIZE)};
+    int const n = read(file_descriptor, buffer, BUFFER_SIZE);
 
     inotify_event const* event {};
     for (char* ptr {buffer}; ptr < buffer + n; ptr += sizeof(inotify_event) + event->len)

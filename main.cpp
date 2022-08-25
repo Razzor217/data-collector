@@ -12,6 +12,7 @@
 
 #include "collector.h"
 
+#include <cstring>
 #include <iostream>
 
 
@@ -33,11 +34,11 @@ int main(int argc, char** argv)
 
     FileSelection selection;
 
-    if (strcmp(argv[3], "-f") == 0)
+    if (std::strcmp(argv[3], "-f") == 0)
     {
         selection = FileSelection::FILES;
     }
-    else if (strcmp(argv[3], "-d") == 0)
+    else if (std::strcmp(argv[3], "-d") == 0)
     {
         selection = FileSelection::FILES_AND_DIRECTORIES;
     }

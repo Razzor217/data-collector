@@ -78,7 +78,7 @@ public:
 
 
 private:
-    void handle_file_event(int const file_descriptor, int const watch_descriptor);
+    void handle_file_event(int const file_descriptor);
 
 private:
     std::filesystem::path input_path {};
